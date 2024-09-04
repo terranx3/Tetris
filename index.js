@@ -233,9 +233,13 @@ function clearRows() {
                 }
             }
 
+            // 새로 생긴 첫 줄을 0으로 초기화
             for (let x = 0; x < BOARD_WIDTH; x++) {
                 board[0][x] = 0;
             }
+
+            // 행이 삭제되면 y를 증가시켜서 같은 행을 다시 검사
+            y++;
         }
     }
 
