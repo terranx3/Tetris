@@ -1,26 +1,18 @@
-// 보드의 너비와 높이 설정
 const BOARD_WIDTH = 10;
 const BOARD_HEIGHT = 20;
 
-// 게임 보드를 2D 배열로 초기화
 const board = [];
-
-// 사운드 설정
 const bgm = document.createElement('audio');
 const breakSound = document.createElement('audio');
 const drop = document.createElement('audio');
 let rotatedShape;
 
-// 점수, 레벨, 클리어된 라인 수
 let score = 0;
 let level = 1;
 let linesCleared = 0;
-
-// HTML 요소 참조
 const scoreElement = document.getElementById('score');
 const levelElement = document.getElementById('level');
 
-// 사운드 파일 설정
 bgm.setAttribute("src", "./assets/bgm.mp3");
 bgm.muted = true;
 
@@ -30,7 +22,6 @@ breakSound.muted = true;
 drop.setAttribute("src", "./assets/drop.mp3");
 drop.muted = true;
 
-// 게임 보드 배열 초기화
 for(let row = 0; row < BOARD_HEIGHT; row++) {
     board[row] = [];
     for(let col = 0; col < BOARD_WIDTH; col++) {
@@ -38,7 +29,6 @@ for(let row = 0; row < BOARD_HEIGHT; row++) {
     }
 }
 
-// 테트로미노 정의
 const tetrominoes = [
     {
         shape : [
@@ -88,7 +78,10 @@ const tetrominoes = [
     },
 ];
 
-// 랜덤한 테트로미노를 생성하는 함수
+/**
+ * 랜덤한 테트로미노를 생성합니다.
+ * @returns {Object} 랜덤 테트로미노 객체
+ */
 function randomTetromino() {
     const index = Math.floor(Math.random() * tetrominoes.length);
     const tetromino = tetrominoes[index];
@@ -100,11 +93,12 @@ function randomTetromino() {
     }; 
 }
 
-// 현재 테트로미노와 다음 테트로미노 설정
 let currentTetromino = randomTetromino();
-let nextTetromino = randomTetromino(); // 추가: 다음 테트로미노
+let currentGhostTetromino;
 
-// 현재 테트로미노를 그리는 함수
+/**
+ * 현재 테트로미노를 그립니다.
+ */
 function drawTetromino() {
     const shape = currentTetromino.shape;
     const color = currentTetromino.color;
@@ -126,7 +120,9 @@ function drawTetromino() {
     }
 }
 
-// 현재 테트로미노를 지우는 함수
+/**
+ * 현재 테트로미노를 지웁니다.
+ */
 function eraseTetromino() {
     const gameBoard = document.getElementById('game_board');
 
@@ -145,7 +141,12 @@ function eraseTetromino() {
     }
 }
 
-// 테트로미노가 지정된 방향으로 이동할 수 있는지 확인하는 함수
+/**
+ * 테트로미노가 지정된 방향으로 이동할 수 있는지 확인합니다.
+ * @param {number} rowOffset - 행 오프셋
+ * @param {number} colOffset - 열 오프셋
+ * @returns {boolean} 이동 가능 여부
+ */
 function canTetrominoMove(rowOffset, colOffset) {
     for(let i = 0; i < currentTetromino.shape.length; i++) {
         for(let j = 0; j < currentTetromino.shape[i].length; j++) {
@@ -163,7 +164,11 @@ function canTetrominoMove(rowOffset, colOffset) {
     return true;
 }
 
-// 테트로미노가 회전할 수 있는지 확인하는 함수
+/**
+ * 테트로미노가 회전할 수 있는지 확인합니다.
+ * @param {Array} rotatedShape - 회전된 테트로미노 모양
+ * @returns {boolean} 회전 가능 여부
+ */
 function canTetrominoRotate(rotatedShape) {
     for(let i = 0; i < rotatedShape.length; i++) {
         for(let j = 0; j < rotatedShape[i].length; j++) {
@@ -180,7 +185,9 @@ function canTetrominoRotate(rotatedShape) {
     return true;
 }
 
-// 테트로미노를 보드에 고정하는 함수
+/**
+ * 테트로미노를 보드에 고정합니다.
+ */
 function lockTetromino () {
     for(let i = 0; i < currentTetromino.shape.length; i++) {
         for(let j = 0; j < currentTetromino.shape[i].length; j++) {
@@ -194,17 +201,16 @@ function lockTetromino () {
 
     let rowsCleared = clearRows();
     if(rowsCleared > 0) {
-        // 점수 업데이트
+        // update Score
     }
 
-    currentTetromino = nextTetromino;
-    nextTetromino = randomTetromino(); // 추가: 다음 테트로미노 업데이트
-
-    // 다음 테트로미노를 표시하는 함수 호출
-    drawNextTetromino();
+    currentTetromino = randomTetromino();
 }
 
-// 행을 지우고 점수를 업데이트하는 함수
+/**
+ * 행을 지우고 점수를 업데이트합니다.
+ * @returns {number} 지운 행의 수
+ */
 function clearRows() {
     let rowsCleared = 0;
 
@@ -227,13 +233,9 @@ function clearRows() {
                 }
             }
 
-            // 새로 생긴 첫 줄을 0으로 초기화
             for (let x = 0; x < BOARD_WIDTH; x++) {
                 board[0][x] = 0;
             }
-
-            // 행이 삭제되면 y를 증가시켜서 같은 행을 다시 검사
-            y++;
         }
     }
 
@@ -244,7 +246,9 @@ function clearRows() {
     return rowsCleared;
 }
 
-// 게임 보드를 업데이트하는 함수
+/**
+ * 게임 보드를 업데이트합니다.
+ */
 function updateGameBoard() {
     const gameBoardElement = document.getElementById('game_board');
     gameBoardElement.innerHTML = "";
@@ -264,7 +268,9 @@ function updateGameBoard() {
     }
 }
 
-// 테트로미노를 회전시키는 함수
+/**
+ * 테트로미노를 회전시킵니다.
+ */
 function rotateTetromino() {
     const newRotatedShape = [];
     const oldShape = currentTetromino.shape;
@@ -286,7 +292,10 @@ function rotateTetromino() {
     }
 }
 
-// 테트로미노를 지정된 방향으로 이동시키는 함수
+/**
+ * 테트로미노를 지정된 방향으로 이동시킵니다.
+ * @param {string} direction - 이동 방향 ('left', 'right', 'down')
+ */
 function moveTetromino(direction) {
     let row = currentTetromino.row;
     let col = currentTetromino.col;
@@ -322,7 +331,9 @@ function moveTetromino(direction) {
     moveGhostTetromino();
 }
 
-// 고스트 테트로미노를 그리는 함수
+/**
+ * 고스트 테트로미노를 그립니다.
+ */
 function drawGhostTetromino() {
     if (!drawGhost) {
         return;
@@ -348,7 +359,9 @@ function drawGhostTetromino() {
     }
 }
 
-// 고스트 테트로미노를 토글하는 함수
+/**
+ * 고스트 테트로미노를 토글합니다.
+ */
 function toggleDrawGhost() {
     drawGhost = !drawGhost;
     updateGameBoard();
@@ -362,7 +375,9 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-// 고스트 테트로미노를 지우는 함수
+/**
+ * 고스트 테트로미노를 지웁니다.
+ */
 function eraseGhostTetromino() {
     const ghost = document.querySelectorAll('.ghost');
     for(let i = 0; i < ghost.length; i++) {
@@ -370,7 +385,12 @@ function eraseGhostTetromino() {
     }
 }
 
-// 고스트 테트로미노가 지정된 방향으로 이동할 수 있는지 확인하는 함수
+/**
+ * 고스트 테트로미노가 지정된 방향으로 이동할 수 있는지 확인합니다.
+ * @param {number} rowOffset - 행 오프셋
+ * @param {number} colOffset - 열 오프셋
+ * @returns {boolean} 이동 가능 여부
+ */
 function canGhostTetromino(rowOffset, colOffset) {
     for(let i = 0; i < currentGhostTetromino.shape.length; i++) {
         for(let j = 0; j < currentGhostTetromino.shape[i].length; j++) {
@@ -387,43 +407,30 @@ function canGhostTetromino(rowOffset, colOffset) {
     return true;
 }
 
-// 고스트 테트로미노를 이동시키는 함수
+/**
+ * 고스트 테트로미노를 이동시킵니다.
+ */
 function moveGhostTetromino() {
     eraseGhostTetromino();
 
     currentGhostTetromino = {...currentTetromino};
 
     while(canGhostTetromino(1,0)) {
-        currentGhostTetromino.row++;
+        currentGhostTetromino.row ++;
     }
 
     drawGhostTetromino();
 }
 
-// 다음 테트로미노를 그리는 함수
-function drawNextTetromino() {
-    const nextBoard = document.getElementById('next_board');
-    nextBoard.innerHTML = "";
+document.body.addEventListener("click", () => {
+    bgm.play();
+    bgm.muted = false; 
+    drop.muted = false;  
+});
 
-    const shape = nextTetromino.shape;
-    const color = nextTetromino.color;
-    
-    for(let r = 0; r < shape.length; r++) {
-        for(let c = 0; c < shape[r].length; c++) {
-            if(shape[r][c]) {
-                const block = document.createElement('div');
-                block.classList.add('block');
-                block.style.backgroundColor = color;
-                block.style.top = r * 24 + "px";
-                block.style.left = c * 24 + "px";
-                block.setAttribute('id', `next-block-${r}-${c}`);
-                nextBoard.appendChild(block);
-            }
-        }
-    }
-}
-
-// 테트로미노를 한 번에 떨어뜨리는 함수
+/**
+ * 테트로미노를 한 번에 떨어뜨립니다.
+ */
 async function dropTetromino() {
     let row = currentTetromino.row;
     let col = currentTetromino.col;
@@ -443,12 +450,21 @@ async function dropTetromino() {
     lockTetromino();
 }
 
-// 일정 시간 동안 대기하는 비동기 함수
+/**
+ * 일정 시간 동안 대기하는 비동기 함수.
+ * @param {number} ms - 대기 시간 (밀리초)
+ * @returns {Promise} 대기 완료 후 resolve되는 Promise
+ */
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// 키보드 입력을 처리하는 함수
+document.addEventListener('keydown', handleKeyPress);
+
+/**
+ * 키보드 입력을 처리하는 함수.
+ * @param {KeyboardEvent} event - 키보드 이벤트
+ */
 function handleKeyPress(event) {
     switch(event.keyCode) {
         case 37 : //left arrow
@@ -469,9 +485,5 @@ function handleKeyPress(event) {
     }
 }
 
-document.addEventListener('keydown', handleKeyPress);
-
-// 게임 시작 시 초기 테트로미노를 그립니다
 drawTetromino();
-drawNextTetromino(); // 추가: 다음 테트로미노를 그립니다
-setInterval(() => moveTetromino('down'), 500);
+setInterval(moveTetromino, 500);

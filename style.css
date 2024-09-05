@@ -6,15 +6,12 @@ body {
     align-items: center;
     margin: 0;
     padding: 0;
+
 }
 
 .logo {
     display: block;
     margin: 0 auto 20px;
-}
-
-.game_board_wrap {
-    position: relative;
 }
 
 #game_board {
@@ -26,15 +23,6 @@ body {
     background: repeating-linear-gradient(rgba(22,28,67,0.8), rgba(22,28,67,0.8) 20px, rgba(23,27,63,0.8) 20px, rgba(23,27,63,0.8) 40px),
         repeating-linear-gradient(rgba(22,28,67,0.8), rgba(22,28,67,0.8) 20px, rgba(23,27,63,0.8) 20px, rgba(23,27,63,0.8) 40px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.6);
-}
-
-#next_tetromino {
-    width: 96px;
-    height: 96px;
-    border: 3px solid #3e5eba;
-    margin: 20px auto;
-    background: rgba(22,28,67,0.8);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
 }
 
 .block {
@@ -51,11 +39,4 @@ body {
     border: 1px solid black;
     position: absolute;
     box-shadow: inset 3px 3px 0 rgba(255,255,255,0.3);
-}
-
-.scoreboard {
-    text-align: center;
-    margin-top: 20px;
-    color: white;
-    font-size: 16px;
 }
